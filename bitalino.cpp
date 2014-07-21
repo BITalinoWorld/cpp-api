@@ -1,8 +1,8 @@
 /**
  * \copyright  Copyright 2014 PLUX - Wireless Biosignals, S.A.
  * \author     Filipe Silva
- * \version    1.0
- * \date       May 2014
+ * \version    1.1
+ * \date       July 2014
  * 
  * \section LICENSE
  
@@ -358,21 +358,34 @@ BITalino::~BITalino(void)
 std::string BITalino::version(void)
 {
    if (started)   throw Exception(Exception::DEVICE_NOT_IDLE);
+   
+   const char *header = "BITalino";
+   
+   const int headerLen = strlen(header);
 
    // send "get version string" command to device
-   char chr = 7;
-   send(&chr, sizeof chr);
-
+   send(7);
+   
    std::string str;
    while(1)
    {
+      char chr;
       recv(&chr, sizeof chr);
-      if (chr == '\n')  return str;
-      str.push_back(chr);
+      const int len = str.size();
+      if (len >= headerLen)
+      {
+         if (chr == '\n')  return str;
+         str.push_back(chr);
+      }
+      else
+         if (chr == header[len])
+            str.push_back(chr);
+         else
+            str.clear();   // discard all data before version header
    }
 }
 
-void BITalino::start(int samplingRate, const Vint &channels)
+void BITalino::start(int samplingRate, const Vint &channels, bool simulated)
 {
    if (started)   throw Exception(Exception::DEVICE_NOT_IDLE);
 
@@ -417,14 +430,10 @@ void BITalino::start(int samplingRate, const Vint &channels)
    }
 
    // send "set samplerate" command to device
-   cmd = (cmd << 6) | 0x03;
-   send(&cmd, sizeof cmd);
-
-   Sleep(50);
+   send((cmd << 6) | 0x03);
 
    // send "start" command to device
-   cmd = (chMask << 2) | 0x01;
-   send(&cmd, sizeof cmd);
+   send((chMask << 2) | (simulated ? 0x02 : 0x01));
 
    started = true;
 }
@@ -434,10 +443,11 @@ void BITalino::stop(void)
    if (!started)   throw Exception(Exception::DEVICE_NOT_IN_ACQUISITION);
 
    // send "stop" command to device
-   char cmd = 0;
-   send(&cmd, sizeof cmd);
+   send(0);
 
    started = false;
+
+   version();  // to flush pending frames in input buffer
 }
 
 void BITalino::read(VFrame &frames)
@@ -495,8 +505,7 @@ void BITalino::battery(int value)
    if (value < 0 || value > 63)   throw Exception(Exception::INVALID_PARAMETER);
 
    // send "set battery" command to device
-   char cmd = value << 2;
-   send(&cmd, sizeof cmd);
+   send(value << 2);
 
 }
 
@@ -514,8 +523,7 @@ void BITalino::trigger(const Vbool &digitalOutput)
          cmd |= 1 << i;
 
    // send "set digital output" command to device
-   cmd = (cmd << 2) | 0x03;
-   send(&cmd, sizeof cmd);
+   send((cmd << 2) | 0x03);
 }
 
 const char* BITalino::Exception::getDescription(void)
@@ -556,16 +564,18 @@ const char* BITalino::Exception::getDescription(void)
 
 // Private methods
 
-void BITalino::send(const void *data, int nbyttowrite)
+void BITalino::send(char cmd)
 {
+   Sleep(50);
+
 #ifdef _WIN32
    if (s == INVALID_SOCKET)
    {
       DWORD nbytwritten = 0;
-	   if (!WriteFile(hCom, data, nbyttowrite, &nbytwritten, NULL))
+	   if (!WriteFile(hCom, &cmd, sizeof cmd, &nbytwritten, NULL))
  		   throw Exception(Exception::CONTACTING_DEVICE);
 
-      if (nbytwritten != nbyttowrite)
+      if (nbytwritten != sizeof cmd)
  		   throw Exception(Exception::CONTACTING_DEVICE);
  		
       return;
@@ -575,7 +585,7 @@ void BITalino::send(const void *data, int nbyttowrite)
 
    if (s == -1)
    {
-      if (write(comm, (const char *) data, nbyttowrite) != nbyttowrite)
+      if (write(comm, &cmd, sizeof cmd) != sizeof cmd)
          throw Exception(Exception::CONTACTING_DEVICE);
       
       return;
@@ -583,7 +593,7 @@ void BITalino::send(const void *data, int nbyttowrite)
 #endif
 
 #ifdef HASBLUETOOTH
-   if (::send(s, (const char *) data, nbyttowrite, 0) != nbyttowrite)
+   if (::send(s, &cmd, sizeof cmd, 0) != sizeof cmd)
       throw Exception(Exception::CONTACTING_DEVICE);
 #endif
 }

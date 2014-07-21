@@ -2,8 +2,8 @@
  * \file
  * \copyright  Copyright 2014 PLUX - Wireless Biosignals, S.A.
  * \author     Filipe Silva
- * \version    1.0
- * \date       May 2014
+ * \version    1.1
+ * \date       July 2014
  * 
  * \section LICENSE
  
@@ -213,12 +213,13 @@ public:
     * \param[in] samplingRate Sampling rate in Hz. Accepted values are 1, 10, 100 or 1000 Hz. Default value is 1000 Hz.
     * \param[in] channels Set of channels to acquire. Accepted channels are 0, 1, 2, 3, 4, and 5.
     * If this set is empty or if it is not given, all 6 analog channels will be acquired.
+    * \param[in] simulated If true, start in simulated mode. Otherwise start in live mode. Default is to start in live mode.
     * \remarks This method cannot be called during an acquisition.
     * \exception Exception (Exception::DEVICE_NOT_IDLE)
     * \exception Exception (Exception::INVALID_PARAMETER)
     * \exception Exception (Exception::CONTACTING_DEVICE)
     */
-   void start(int samplingRate = 1000, const Vint &channels = Vint());
+   void start(int samplingRate = 1000, const Vint &channels = Vint(), bool simulated = false);
    
    /**
     * Stops a signal acquisition.
@@ -268,7 +269,7 @@ public:
 
 
 private:
-   void send(const void *data, int nbyttowrite);
+   void send(char cmd);
    void recv(void *data, int nbyttoread);
    void close(void);
 
