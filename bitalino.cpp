@@ -152,6 +152,11 @@ BITalino::VDevInfo BITalino::find(void)
 
     ::close(sock);
     if (pii != ii)   free(pii);
+   
+#else
+   
+   throw Exception(Exception::BT_ADAPTER_NOT_FOUND);
+   
 #endif // HASBLUETOOTH
    
 #endif // Linux or Mac OS

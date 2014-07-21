@@ -177,7 +177,7 @@ public:
     * Searches for Bluetooth devices in range.
     * \return a list of found devices
     * \exception Exception (Exception::PORT_INITIALIZATION)
-    * \exception Exception (Exception::BT_ADAPTER_NOT_FOUND) - Windows only
+    * \exception Exception (Exception::BT_ADAPTER_NOT_FOUND)
     */
    static VDevInfo find(void);
 
