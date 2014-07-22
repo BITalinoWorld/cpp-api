@@ -386,7 +386,10 @@ std::string BITalino::version(void)
          if (chr == header[len])
             str.push_back(chr);
          else
+         {
             str.clear();   // discard all data before version header
+            if (chr == header[0])   str.push_back(chr);
+         }
    }
 }
 
