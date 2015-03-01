@@ -1,8 +1,8 @@
 /**
- * \copyright  Copyright 2014 PLUX - Wireless Biosignals, S.A.
+ * \copyright  Copyright 2014-2015 PLUX - Wireless Biosignals, S.A.
  * \author     Filipe Silva
- * \version    1.1
- * \date       July 2014
+ * \version    1.1a
+ * \date       March 2015
  * 
  * \section LICENSE
  
@@ -574,7 +574,7 @@ const char* BITalino::Exception::getDescription(void)
 
 void BITalino::send(char cmd)
 {
-   Sleep(50);
+   Sleep(150);
 
 #ifdef _WIN32
    if (s == INVALID_SOCKET)

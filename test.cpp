@@ -76,23 +76,20 @@ int main()
       dev.start(1000, chans);
       */
 
-      bool ledState = false;
+      dev.trigger({false, false, true, false});
+      // use block below if your compiler doesn't support vector initializer lists
+      /*
+      BITalino::Vbool outputs;
+      outputs.push_back(false);
+      outputs.push_back(false);
+      outputs.push_back(true);
+      outputs.push_back(false);
+      dev.trigger(outputs);
+      */
 
       BITalino::VFrame frames(100); // initialize the frames vector with 100 frames 
       do
       {
-         ledState = !ledState;   // toggle LED state
-         dev.trigger({false, false, ledState, false});
-         // use block below if your compiler doesn't support vector initializer lists
-         /*
-         BITalino::Vbool outputs;
-         outputs.push_back(false);
-         outputs.push_back(false);
-         outputs.push_back(ledState);
-         outputs.push_back(false);
-         dev.trigger(outputs);
-         */
-
          dev.read(frames); // get 100 frames from device
          const BITalino::Frame &f = frames[0];  // get a reference to the first frame of each 100 frames block
          printf("%d : %d %d %d %d ; %d %d %d %d %d %d\n",   // dump the first frame
