@@ -76,7 +76,8 @@ int main()
       dev.start(1000, chans);
       */
 
-      dev.trigger({false, false, true, false});
+      //dev.trigger({false, false, true, false});  // for original BITalino
+      //dev.trigger({true, false});                // for BITalino 2
       // use block below if your compiler doesn't support vector initializer lists
       /*
       BITalino::Vbool outputs;
