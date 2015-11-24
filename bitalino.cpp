@@ -612,7 +612,7 @@ BITalino::State BITalino::state(void)
 
    struct StateX
    {
-      unsigned short analogs[6], battery;
+      unsigned short analog[6], battery;
       unsigned char  batThreshold, portsCRC;
    } statex;
 
@@ -634,15 +634,13 @@ BITalino::State BITalino::state(void)
    State state;
 
    for(int i = 0; i < 6; i++)
-      state.analogs[i] = statex.analogs[i];
+      state.analog[i] = statex.analog[i];
 
    state.battery = statex.battery;
    state.batThreshold = statex.batThreshold;
 
-   state.i1 = ((statex.portsCRC & 0x80) != 0);
-   state.i2 = ((statex.portsCRC & 0x40) != 0);
-   state.o1 = ((statex.portsCRC & 0x20) != 0);
-   state.o2 = ((statex.portsCRC & 0x10) != 0);
+   for(int i = 0; i < 4; i++)
+      state.digital[i] = ((statex.portsCRC & (0x80 >> i)) != 0);
 
    return state;
 }

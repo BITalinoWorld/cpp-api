@@ -163,13 +163,12 @@ public:
    /// Current device state returned by BITalino::state()
    struct State
    {
-      int   analogs[6],    ///< Analog inputs values (0...1023)
+      int   analog[6],     ///< Array of analog inputs values (0...1023)
             battery,       ///< Battery voltage value (0...1023)
             batThreshold;  ///< Low-battery LED threshold (last value set with BITalino::battery())
-      bool  i1,            ///< %State of first digital input (I1)
-            i2,            ///< %State of second digital input (I2)
-            o1,            ///< %State of first digital output (O1)
-            o2;            ///< %State of second digital output (O2)
+      /// Array of digital ports states (false for low level or true for high level).
+      /// The array contents are: I1 I2 O1 O2.
+      bool  digital[4];
    };
 
    /// %Exception class thrown from BITalino methods.
