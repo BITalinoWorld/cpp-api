@@ -1,5 +1,5 @@
 /**
- * \copyright  Copyright 2014-2015 PLUX - Wireless Biosignals, S.A.
+ * \copyright  Copyright 2014-2016 PLUX - Wireless Biosignals, S.A.
  * \author     Filipe Silva
  * \version    2.1
  * \date       February 2016
