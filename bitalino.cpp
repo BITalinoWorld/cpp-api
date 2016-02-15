@@ -1,8 +1,8 @@
 /**
  * \copyright  Copyright 2014-2015 PLUX - Wireless Biosignals, S.A.
  * \author     Filipe Silva
- * \version    2.0
- * \date       November 2015
+ * \version    2.1
+ * \date       February 2016
  * 
  * \section LICENSE
  
@@ -26,6 +26,8 @@
 #ifdef _WIN32 // 32-bit or 64-bit Windows
 
 #define HASBLUETOOTH
+
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 
 #include <winsock2.h>
 #include <ws2bth.h>
