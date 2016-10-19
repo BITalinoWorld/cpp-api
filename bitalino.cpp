@@ -235,7 +235,7 @@ BITalino::BITalino(const char *address) : nChannels(0), isBitalino2(false)
       dcb.fOutX = FALSE;
       dcb.fInX = FALSE;
       dcb.fNull = FALSE;
-      dcb.fRtsControl = RTS_CONTROL_DISABLE;
+      dcb.fRtsControl = RTS_CONTROL_ENABLE;
       dcb.ByteSize = 8;
       dcb.Parity = NOPARITY;
       dcb.StopBits = ONESTOPBIT;
